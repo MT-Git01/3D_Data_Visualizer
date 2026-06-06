@@ -52,6 +52,38 @@ def generate_ripple_wave(grid_size=40):
     })
     return df
 
+def generate_flat_interference(grid_size=50):
+    """Generates a flat 2D plane (Z=0) with a beautiful wave interference pattern in the 4th column."""
+    x_range = np.linspace(-10.0, 10.0, grid_size)
+    y_range = np.linspace(-10.0, 10.0, grid_size)
+    
+    x_grid, y_grid = np.meshgrid(x_range, y_range)
+    x_flat = x_grid.flatten()
+    y_flat = y_grid.flatten()
+    z_flat = np.zeros_like(x_flat) # Z is always 0
+    
+    # Define wave sources
+    sources = [
+        {'pos': (-3.0, -3.0), 'amp': 1.0, 'freq': 1.8},
+        {'pos': (3.0, 3.0), 'amp': 1.0, 'freq': 1.8},
+        {'pos': (-3.0, 3.0), 'amp': -0.8, 'freq': 1.2},
+        {'pos': (3.0, -3.0), 'amp': -0.8, 'freq': 1.2}
+    ]
+    
+    val_c = np.zeros_like(x_flat)
+    for src in sources:
+        r = np.sqrt((x_flat - src['pos'][0])**2 + (y_flat - src['pos'][1])**2)
+        # Cosine wave decaying with distance from the source
+        val_c += src['amp'] * np.cos(src['freq'] * r) / (1.0 + 0.15 * r)
+        
+    df = pd.DataFrame({
+        'X_Flat': x_flat,
+        'Y_Flat': y_flat,
+        'Z_Zero': z_flat,
+        'Intensity': val_c
+    })
+    return df
+
 if __name__ == '__main__':
     print("Generating 3-column Lorenz Attractor dataset...")
     lorenz_df = generate_lorenz_attractor(1500)
@@ -63,4 +95,10 @@ if __name__ == '__main__':
     ripple_df.to_csv('ripple_wave_4d.csv', index=False)
     print("Saved 'ripple_wave_4d.csv'")
     
+    print("Generating 4-column Flat Interference dataset...")
+    flat_df = generate_flat_interference(50)
+    flat_df.to_csv('flat_interference_4d.csv', index=False)
+    print("Saved 'flat_interference_4d.csv'")
+    
     print("Sample datasets created successfully!")
+

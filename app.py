@@ -208,7 +208,7 @@ if uploaded_file is not None:
         st.session_state.filename = uploaded_file.name
 else:
     st.sidebar.markdown("<br><b>またはサンプルデータを選択:</b>", unsafe_allow_html=True)
-    col_demo1, col_demo2 = st.sidebar.columns(2)
+    col_demo1, col_demo2, col_demo3 = st.sidebar.columns(3)
     with col_demo1:
         if st.button("ローレンツ (3列)", use_container_width=True):
             st.session_state.df = load_csv("lorenz_attractor_3d.csv")
@@ -217,6 +217,11 @@ else:
         if st.button("減衰波紋面 (4列)", use_container_width=True):
             st.session_state.df = load_csv("ripple_wave_4d.csv")
             st.session_state.filename = "ripple_wave_4d.csv"
+    with col_demo3:
+        if st.button("平面干渉波 (4列)", use_container_width=True):
+            st.session_state.df = load_csv("flat_interference_4d.csv")
+            st.session_state.filename = "flat_interference_4d.csv"
+
 
 df = st.session_state.df
 filename = st.session_state.filename
